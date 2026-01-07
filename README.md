@@ -4,14 +4,21 @@ A Claude Code plugin marketplace.
 
 ## Install
 
+### Terminal
+
 ```bash
+# Add marketplace
 claude marketplace add https://github.com/ekil1100/claude-markplace/raw/main/marketplace.json
+
+# Install plugin
+claude plugin install planning-with-files@claude-marketplace
 ```
 
-Then install plugins:
+### In Claude Code
 
-```bash
-claude plugin install planning-with-files@claude-marketplace
+```
+/install-marketplace https://github.com/ekil1100/claude-markplace/raw/main/marketplace.json
+/install planning-with-files@claude-marketplace
 ```
 
 ## Plugins
