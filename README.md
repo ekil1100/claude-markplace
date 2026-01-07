@@ -11,14 +11,14 @@ A Claude Code plugin marketplace.
 claude marketplace add https://github.com/ekil1100/claude-markplace/raw/main/marketplace.json
 
 # Install plugin
-claude plugin install planning-with-files@claude-marketplace
+claude plugin install planning-with-files@ekil-marketplace
 ```
 
 ### In Claude Code
 
 ```
 /plugin marketplace add ekil1100/claude-markplace
-/plugin install planning-with-files@claude-marketplace
+/plugin install planning-with-files@ekil-marketplace
 ```
 
 ## Plugins
