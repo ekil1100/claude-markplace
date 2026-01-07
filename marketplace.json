@@ -1,0 +1,21 @@
+{
+  "name": "claude-marketplace",
+  "owner": {
+    "name": "like"
+  },
+  "plugins": [
+    {
+      "name": "planning-with-files",
+      "source": "./planning-with-files",
+      "description": "Manus-style persistent markdown files for planning and progress tracking",
+      "version": "1.0.0",
+      "author": {
+        "name": "OthmanAdi",
+        "url": "https://github.com/OthmanAdi/planning-with-files"
+      },
+      "license": "MIT",
+      "skills": "./skills/",
+      "strict": false
+    }
+  ]
+}
