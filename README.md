@@ -5,7 +5,7 @@ A Claude Code plugin marketplace.
 ## Install
 
 ```bash
-claude marketplace add https://github.com/like/claude-markplace/raw/main/marketplace.json
+claude marketplace add https://github.com/ekil1100/claude-markplace/raw/main/marketplace.json
 ```
 
 Then install plugins:
