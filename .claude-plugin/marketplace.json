@@ -15,6 +15,7 @@
       },
       "license": "MIT",
       "skills": "./skills/",
+      "commands": "./commands/",
       "strict": false
     }
   ]
