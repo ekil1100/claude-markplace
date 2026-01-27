@@ -44,12 +44,14 @@ claude plugin install ai-assisted-case-study@ekil-marketplace
 
 ### Superpowers
 
-```bash
-# 终端
-claude plugin install superpowers --url https://github.com/anthropics/claude-code-superpowers/raw/main/.claude-plugin
+GitHub: https://github.com/obra/superpowers
 
-# Claude Code 内
-/plugin install superpowers --url https://github.com/anthropics/claude-code-superpowers/raw/main/.claude-plugin
+```bash
+# 添加 superpowers 市场
+/plugin marketplace add obra/superpowers-marketplace
+
+# 安装 superpowers
+/plugin install superpowers@superpowers-marketplace
 ```
 
 ## 许可证
