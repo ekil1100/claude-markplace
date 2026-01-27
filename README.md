@@ -30,7 +30,7 @@ claude plugin install planning-with-files@ekil-marketplace
 
 AI 辅助工作案例文档生成。将 AI 辅助研发过程沉淀为可验证的案例文档，用于团队分享和知识沉淀。
 
-**依赖：** [superpowers](#superpowers) 的 `episodic-memory:search-conversations`
+**依赖：** [episodic-memory](#episodic-memory)
 
 ```bash
 # 终端
@@ -42,16 +42,16 @@ claude plugin install ai-assisted-case-study@ekil-marketplace
 
 ## 依赖
 
-### Superpowers
+### episodic-memory
 
-GitHub: https://github.com/obra/superpowers
+GitHub: https://github.com/obra/episodic-memory
 
 ```bash
 # 添加 superpowers 市场
 /plugin marketplace add obra/superpowers-marketplace
 
-# 安装 superpowers
-/plugin install superpowers@superpowers-marketplace
+# 安装 episodic-memory
+/plugin install episodic-memory@superpowers-marketplace
 ```
 
 ## 许可证
