@@ -17,6 +17,18 @@
       "skills": "./skills/",
       "commands": "./commands/",
       "strict": false
+    },
+    {
+      "name": "ai-assisted-case-study",
+      "source": "./ai-assisted-case-study",
+      "description": "Summarize AI-assisted work into verifiable case study documents for team sharing and knowledge transfer",
+      "version": "1.0.0",
+      "author": {
+        "name": "like"
+      },
+      "license": "MIT",
+      "skills": "./skills/",
+      "strict": false
     }
   ]
 }
