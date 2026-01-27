@@ -2,16 +2,7 @@
 
 Claude Code 插件市场。
 
-## 插件列表
-
-| 插件 | 描述 | 依赖 |
-|------|------|------|
-| [planning-with-files](./planning-with-files/) | Manus 风格持久化规划与进度跟踪 | - |
-| [ai-assisted-case-study](./ai-assisted-case-study/) | AI 辅助工作案例文档生成 | [superpowers](#依赖安装) |
-
-## 安装
-
-### 1. 添加市场
+## 添加市场
 
 ```bash
 # 终端
@@ -21,21 +12,37 @@ claude marketplace add https://github.com/ekil1100/claude-markplace/raw/main/mar
 /plugin marketplace add ekil1100/claude-markplace
 ```
 
-### 2. 安装插件
+## 插件
+
+### planning-with-files
+
+Manus 风格持久化规划与进度跟踪。
 
 ```bash
 # 终端
-claude plugin install <插件名>@ekil-marketplace
+claude plugin install planning-with-files@ekil-marketplace
 
 # Claude Code 内
-/plugin install <插件名>@ekil-marketplace
+/plugin install planning-with-files@ekil-marketplace
 ```
 
-## 依赖安装
+### ai-assisted-case-study
+
+AI 辅助工作案例文档生成。将 AI 辅助研发过程沉淀为可验证的案例文档，用于团队分享和知识沉淀。
+
+**依赖：** [superpowers](#superpowers) 的 `episodic-memory:search-conversations`
+
+```bash
+# 终端
+claude plugin install ai-assisted-case-study@ekil-marketplace
+
+# Claude Code 内
+/plugin install ai-assisted-case-study@ekil-marketplace
+```
+
+## 依赖
 
 ### Superpowers
-
-`ai-assisted-case-study` 依赖 superpowers 的 `episodic-memory:search-conversations` 搜索历史对话。
 
 ```bash
 # 终端
