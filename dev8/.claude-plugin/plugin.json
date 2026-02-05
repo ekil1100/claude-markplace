@@ -1,0 +1,8 @@
+{
+  "name": "dev8",
+  "version": "1.0.0",
+  "description": "V8-referenced development for ets_runtime with TDD worker and 6-criteria reviewer",
+  "author": { "name": "like" },
+  "agents": "./agents/",
+  "skills": "./skills/"
+}
