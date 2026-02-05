@@ -5,10 +5,6 @@ Claude Code 插件市场。
 ## 添加市场
 
 ```bash
-# 终端
-claude marketplace add https://github.com/ekil1100/claude-markplace/raw/main/marketplace.json
-
-# Claude Code 内
 /plugin marketplace add ekil1100/claude-markplace
 ```
 
@@ -19,10 +15,6 @@ claude marketplace add https://github.com/ekil1100/claude-markplace/raw/main/mar
 Manus 风格持久化规划与进度跟踪。
 
 ```bash
-# 终端
-claude plugin install planning-with-files@ekil-marketplace
-
-# Claude Code 内
 /plugin install planning-with-files@ekil-marketplace
 ```
 
@@ -33,11 +25,15 @@ AI 辅助工作案例文档生成。将 AI 辅助研发过程沉淀为可验证�
 **依赖：** [episodic-memory](#episodic-memory)
 
 ```bash
-# 终端
-claude plugin install ai-assisted-case-study@ekil-marketplace
-
-# Claude Code 内
 /plugin install ai-assisted-case-study@ekil-marketplace
+```
+
+### dev8
+
+V8 参考源码驱动的 TDD 开发插件，用于参考 V8 源码实现 ets_runtime 功能。三角色协作（Planner / Worker / Reviewer），含代码审查评分机制。
+
+```bash
+/plugin install dev8@ekil-marketplace
 ```
 
 ## 依赖
