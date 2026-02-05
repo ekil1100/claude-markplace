@@ -16,12 +16,28 @@ description: "Use when asked to reference V8 source code to implement a feature 
 | `review.md` | 6 项评分标准（三方共享） |
 | `mistakes.md` | 常见错误（可追加，三方共享） |
 | `.clang-format` | 代码格式化配置 |
-| `format.sh` | 格式化 git 工作区中已修改的 C/C++ 文件 |
+| `format.sh` | 格式化 git 工作区中已修改的 C/C++ 文件（仅修改行） |
 | `ets_runtime.md` | ets_runtime 编译、测试、运行参考（按需读取） |
+| `states.md` | Task 状态定义（三方共享） |
+| `plan-template.md` | Plan 输出模板 |
+| `tasks-template.md` | tasks.md 模板 |
+
+Task 状态定义详见 `${CLAUDE_PLUGIN_ROOT}/states.md`。
 
 ---
 
 ## 执行流程
+
+### 恢复检查
+
+在开始需求确认之前，先检查当前分支是否有已存在的 plan/tasks：
+
+1. 获取当前分支名：`git branch --show-current`
+2. 检查 `.claude/dev8/<branch-name>/plan.md` 是否存在
+3. **如果存在**：`Read plan.md` 和 `tasks.md`，用 `AskUserQuestion` 询问用户：
+   - **继续未完成的任务**：根据各 Task 的 Status 和 Reason 决定恢复动作（参照下方"Task 状态定义"表），从对应步骤继续执行
+   - **开始新任务**：进入正常的需求确认流程（覆盖旧的 plan.md 和 tasks.md）
+4. **如果不存在**：进入正常的需求确认流程
 
 ### 0. 需求确认
 
@@ -37,94 +53,92 @@ description: "Use when asked to reference V8 source code to implement a feature 
 
 ### 1. 输出 Plan
 
-需求确认后，输出实现计划（用户可提修改意见，迭代直到确认）：
-
-```markdown
-# [功能名] Implementation Plan
-
-**Goal:** [一句话目标]
-**Architecture:** [2-3 句方案描述]
-**V8 Reference:** [参考的 V8 源文件列表]
-
----
-
-### Task 1: [组件名]
-
-**Files:**
-- Create: `exact/path/to/file.h`
-- Modify: `exact/path/to/existing.cpp:123-145`
-- Test: `tests/exact/path/to/test.cpp`
-
-**Step 1: Write failing test**
-[完整测试代码]
-
-**Step 2: Write minimal implementation**
-[完整实现代码]
-
-**Step 3: Commit**
-`feat(scope): description`
-```
+需求确认后，参照 `${CLAUDE_PLUGIN_ROOT}/plan-template.md` 输出实现计划（用户可提修改意见，迭代直到确认）。
 
 **⚠️ 用户确认 Plan 后才能进入下一步。**
 
-### 2. 派发 Worker
+用户确认 Plan 后立即持久化：
+
+1. 获取当前分支名：`git branch --show-current`
+2. 创建目录：`.claude/dev8/<branch-name>/`
+3. 创建目录：`.claude/dev8/<branch-name>/docs/`
+4. `Write .claude/dev8/<branch-name>/plan.md`：保存完整 Plan 内容
+5. `Write .claude/dev8/<branch-name>/tasks.md`：参照 `${CLAUDE_PLUGIN_ROOT}/tasks-template.md` 生成
+
+### 2. 创建分支（可选）
+
+根据 Plan 的 Goal 自动生成语义化分支名建议，格式 `<type>/<brief-description>`（如 `feat/add-int32-node`, `fix/deopt-check`）。
+
+使用 `AskUserQuestion` 展示建议分支名：
+- **创建建议分支**：执行 `git checkout -b <branch-name>`，然后将 `.claude/dev8/` 下的持久化文件移动到新分支名目录
+- **在当前分支工作**：不做任何操作
+- **自定义分支名**：用户输入自定义名称后执行 `git checkout -b <custom-name>`，同样移动持久化文件
+
+创建新分支后需要更新持久化目录：
+1. 将 `.claude/dev8/<old-branch>/` 重命名为 `.claude/dev8/<new-branch>/`
+2. 后续所有操作使用新分支名作为路径
+
+### 3. 派发 Worker
 
 ```
-Task(dev8-worker, run_in_background=True, max_turns=50):
+Task(dev8-worker, run_in_background=True, max_turns=100):
   "实现 [Task 描述]。
    V8 参考：[V8 源文件路径]
    V8 源码根路径：[v8_root]
    项目根路径：[project_root]
    文档目录：[docs_dir]
-   **禁止编译**"
+   任务追踪文件：.claude/dev8/<branch-name>/tasks.md
+   当前任务编号：Task N
+   **禁止编译**
+
+   完成后更新 .claude/dev8/<branch-name>/tasks.md：标记完成的步骤为 [x]，Status 改为 "in review""
 ```
 
 Worker 完成后会执行 `${CLAUDE_PLUGIN_ROOT}/format.sh` 格式化代码。
 
-### 3. 派发 Reviewer
+**Worker 返回 BLOCKED 时**，Planner 读取 tasks.md 中对应 Task 的 Reason，按原因处理：
+- `clang-format not found`：使用 `AskUserQuestion` 提示用户安装 clang-format（如 `apt install clang-format` 或 `brew install clang-format`），安装后重新派发该 Task
+- 其他原因：根据具体情况决定（提示用户 / 调整任务 / 升级决策）
+
+### 4. 派发 Reviewer
 
 ```
-Task(dev8-reviewer, run_in_background=True):
+Task(dev8-reviewer, run_in_background=True, max_turns=100):
   "审查最新提交。
    V8 参考：[V8 源文件路径]
    V8 源码根路径：[v8_root]
-   任务描述：[Task 描述]"
+   任务描述：[Task 描述]
+   文档目录：.claude/dev8/<branch-name>/docs/
+   任务追踪文件：.claude/dev8/<branch-name>/tasks.md
+   当前任务编号：Task N
+
+   Review 完成后更新 .claude/dev8/<branch-name>/tasks.md：
+   - 通过（≥95）：Status 改为 "completed"，更新 Progress
+   - 未通过（<95）：追加本轮扣分摘要"
 ```
 
 **Review 结果处理**：
 
 | 结果 | 动作 |
 |------|------|
-| ≥90 分 | 通过，进入下一步 |
-| <90 分（第 1-3 轮） | 将 Reviewer 的修复建议附给 Worker，重新派发 |
-| <90 分（第 3 轮后） | 升级给用户决策 |
+| ≥95 分 | 通过，进入下一步 |
+| <95 分（第 1-3 轮） | 将 Reviewer 的修复建议附给 Worker，重新派发 |
+| <95 分（第 3 轮后） | 升级给用户决策 |
 
-### 4. 编译验证（可选）
+### 5. 编译验证
 
-问用户是否需要编译验证。先 `Read ${CLAUDE_PLUGIN_ROOT}/ets_runtime.md` 获取完整的构建/测试/运行命令参考。
+`Read ${CLAUDE_PLUGIN_ROOT}/ets_runtime.md`（"Planner 编译验证流程"章节）获取详细流程，简要：
 
-**自动检测工作目录**：
+1. **ets_runtime 项目**：自动组装命令并直接执行，Status 改为 `building`
+2. **非 ets_runtime 项目**：Status 改为 `blocked`，Reason 写 `not an ets_runtime repo, build command unknown`，用 `AskUserQuestion` 让用户提供编译命令
+3. **编译通过**：Status 改为 `done`
+4. **编译失败**：Status 改为 `build_failed`，Reason 写编译错误摘要，附错误信息重新派发 Worker
 
-- **如果在 ets_runtime 目录下**（路径包含 `arkcompiler/ets_runtime`）：
-  - 令 `OHOS_ROOT` 为 ets_runtime 往上两级目录（即包含 `ark.py` 的目录）
-  - GN 构建测试：`cd ${OHOS_ROOT} && python3 ark.py x64.debug {test_name}{Mode}Action`
-  - 直接用二进制快速验证：见 `ets_runtime.md` 第 2 节
-- **否则**：
-  - 询问用户构建/测试命令
+### 6. DONE
 
-编译失败 → 将错误信息附给 Worker，重新派发修复。
+所有 Task 状态为 `done` 后，汇总报告结果。
 
-### 5. DONE
-
-所有 Task 完成、Review 通过、编译验证通过（或跳过）后，汇总报告结果。
-
----
-
-## 并行规则
-
-- Review 期间可派发其他**独立** Task 的 Worker/Reviewer
-- 不要同时启动两个相同 Worker（重复工作）
-- 不要派发依赖当前 Task 的工作
+plan.md 和 tasks.md **不删除**，作为历史记录保留。
 
 ---
 
@@ -136,7 +150,7 @@ Task(dev8-reviewer, run_in_background=True):
 
 ## 重要约束
 
-- Worker **禁止编译**，编译由 Planner 在步骤 4 统一执行
+- Worker **禁止编译**，编译由 Planner 在步骤 5 统一执行
 - Reviewer **禁止编译**，只做代码审查
 - **代码注释中禁止提及 V8、Maglev 或任何外部项目来源**
 - V8 路径、项目路径等由 Planner 在 dispatch 时注入，不要硬编码

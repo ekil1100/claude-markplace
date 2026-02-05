@@ -221,3 +221,25 @@ group("ark_jit_ts_test") {
   deps += [ "test_name:test_nameJitAction" ]
 }
 ```
+
+---
+
+## 4. Planner 编译验证流程
+
+> **读者**：Planner（步骤 5 编译验证时参考此章节）
+
+### 自动检测工作目录
+
+- **如果在 ets_runtime 目录下**（路径包含 `arkcompiler/ets_runtime`）：
+  1. 令 `OHOS_ROOT` 为 ets_runtime 往上两级目录（即包含 `ark.py` 的目录）
+  2. 根据 Plan 中的测试用例名，组装具体的编译命令（参照上方 GN Target 命名规则）
+  3. **检查是否涉及 stub 文件修改**：`git diff --name-only` 中是否包含 `stub` 关键路径
+     - **不涉及 stub**：命令追加 `--gn-args="skip_gen_stub=true"` 加速编译
+     - **涉及 stub**：不添加该参数，正常编译
+  4. **直接执行**编译命令，将对应 Task 的 Status 改为 `building`
+
+- **否则（非 ets_runtime 项目）**：将对应 Task 的 Status 改为 `blocked`，Reason 写 `not an ets_runtime repo, build command unknown`，用 `AskUserQuestion` 让用户提供编译命令，拿到后继续执行
+
+### 编译失败处理
+
+编译失败 → 将对应 Task 的 Status 改为 `build_failed`，Reason 写编译错误摘要，将错误信息附给 Worker，重新派发修复。
