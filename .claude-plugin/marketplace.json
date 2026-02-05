@@ -37,7 +37,6 @@
       "version": "1.0.0",
       "author": { "name": "like" },
       "license": "MIT",
-      "skills": "./skills/",
       "strict": false
     }
   ]
