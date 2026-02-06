@@ -36,6 +36,14 @@ V8 参考源码驱动的 TDD 开发插件，用于参考 V8 源码实现 ets_run
 /plugin install dev8@ekil-marketplace
 ```
 
+### commit-push
+
+提交所有更改并推送到远程。
+
+```bash
+/plugin install commit-push@ekil-marketplace
+```
+
 ## 依赖
 
 ### episodic-memory

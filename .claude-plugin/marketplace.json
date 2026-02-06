@@ -38,6 +38,16 @@
       "author": { "name": "like" },
       "license": "MIT",
       "strict": false
+    },
+    {
+      "name": "commit-push",
+      "source": "./commit-push",
+      "description": "Commit all changes and push to remote",
+      "version": "1.0.0",
+      "author": { "name": "like" },
+      "license": "MIT",
+      "commands": "./commands/",
+      "strict": false
     }
   ]
 }
