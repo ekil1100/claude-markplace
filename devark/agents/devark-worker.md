@@ -76,7 +76,7 @@ Apache 2.0，`Huawei Device Co., Ltd.`
 
 文档占 Review 评分 5 分，必须与代码同步更新。
 
-**位置**：由 Planner 在任务描述中指定（`.claude/devark/<branch-name>/docs/`）
+**位置**：由 Planner 在任务描述中指定（`.agents/devark/<branch-name>/docs/`）
 
 **内容要求**：
 - 设计说明：实现思路、数据结构选择、关键算法

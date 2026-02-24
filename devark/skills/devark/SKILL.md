@@ -33,7 +33,7 @@ Task 状态定义详见 `${CLAUDE_PLUGIN_ROOT}/states.md`。
 在开始需求确认之前，先检查当前分支是否有已存在的 plan/tasks：
 
 1. 获取当前分支名：`git branch --show-current`
-2. 检查 `.claude/devark/<branch-name>/plan.md` 是否存在
+2. 检查 `.agents/devark/<branch-name>/plan.md` 是否存在
 3. **如果存在**：`Read plan.md` 和 `tasks.md`，用 `AskUserQuestion` 询问用户：
    - **继续未完成的任务**：根据各 Task 的 Status 和 Reason 决定恢复动作（参照下方"Task 状态定义"表），从对应步骤继续执行
    - **开始新任务**：进入正常的需求确认流程（覆盖旧的 plan.md 和 tasks.md）
@@ -59,22 +59,22 @@ Task 状态定义详见 `${CLAUDE_PLUGIN_ROOT}/states.md`。
 用户确认 Plan 后立即持久化：
 
 1. 获取当前分支名：`git branch --show-current`
-2. 创建目录：`.claude/devark/<branch-name>/`
-3. 创建目录：`.claude/devark/<branch-name>/docs/`
-4. `Write .claude/devark/<branch-name>/plan.md`：保存完整 Plan 内容
-5. `Write .claude/devark/<branch-name>/tasks.md`：参照 `${CLAUDE_PLUGIN_ROOT}/tasks-template.md` 生成
+2. 创建目录：`.agents/devark/<branch-name>/`
+3. 创建目录：`.agents/devark/<branch-name>/docs/`
+4. `Write .agents/devark/<branch-name>/plan.md`：保存完整 Plan 内容
+5. `Write .agents/devark/<branch-name>/tasks.md`：参照 `${CLAUDE_PLUGIN_ROOT}/tasks-template.md` 生成
 
 ### 2. 创建分支（可选）
 
 根据 Plan 的 Goal 自动生成语义化分支名建议，格式 `<type>/<brief-description>`（如 `feat/add-int32-node`, `fix/deopt-check`）。
 
 使用 `AskUserQuestion` 展示建议分支名：
-- **创建建议分支**：执行 `git checkout -b <branch-name>`，然后将 `.claude/devark/` 下的持久化文件移动到新分支名目录
+- **创建建议分支**：执行 `git checkout -b <branch-name>`，然后将 `.agents/devark/` 下的持久化文件移动到新分支名目录
 - **在当前分支工作**：不做任何操作
 - **自定义分支名**：用户输入自定义名称后执行 `git checkout -b <custom-name>`，同样移动持久化文件
 
 创建新分支后需要更新持久化目录：
-1. 将 `.claude/devark/<old-branch>/` 重命名为 `.claude/devark/<new-branch>/`
+1. 将 `.agents/devark/<old-branch>/` 重命名为 `.agents/devark/<new-branch>/`
 2. 后续所有操作使用新分支名作为路径
 
 ### 3. 派发 Worker
@@ -84,12 +84,12 @@ Task(devark-worker, run_in_background=True, max_turns=100):
   "实现 [Task 描述]。
    项目根路径：[project_root]
    文档目录：[docs_dir]
-   任务追踪文件：.claude/devark/<branch-name>/tasks.md
+   任务追踪文件：.agents/devark/<branch-name>/tasks.md
    当前任务编号：Task N
    参考资料：[如有参考代码或文档，注明路径]
    **禁止编译**
 
-   完成后更新 .claude/devark/<branch-name>/tasks.md：标记完成的步骤为 [x]，Status 改为 "in review""
+   完成后更新 .agents/devark/<branch-name>/tasks.md：标记完成的步骤为 [x]，Status 改为 "in review""
 ```
 
 Worker 完成后会执行 `${CLAUDE_PLUGIN_ROOT}/format.sh` 格式化代码。
@@ -104,12 +104,12 @@ Worker 完成后会执行 `${CLAUDE_PLUGIN_ROOT}/format.sh` 格式化代码。
 Task(devark-reviewer, run_in_background=True, max_turns=100):
   "审查最新提交。
    任务描述：[Task 描述]
-   文档目录：.claude/devark/<branch-name>/docs/
-   任务追踪文件：.claude/devark/<branch-name>/tasks.md
+   文档目录：.agents/devark/<branch-name>/docs/
+   任务追踪文件：.agents/devark/<branch-name>/tasks.md
    当前任务编号：Task N
    参考资料：[如有参考代码或文档，注明路径]
 
-   Review 完成后更新 .claude/devark/<branch-name>/tasks.md：
+   Review 完成后更新 .agents/devark/<branch-name>/tasks.md：
    - 通过（≥95）：Status 改为 "completed"，更新 Progress
    - 未通过（<95）：追加本轮扣分摘要"
 ```

@@ -1,6 +1,6 @@
 # tasks.md 模板
 
-Planner 在用户确认 Plan 后，按此模板生成 `.claude/dev8/<branch-name>/tasks.md`：
+Planner 在用户确认 Plan 后，按此模板生成 `.agents/dev8/<branch-name>/tasks.md`：
 
 ```markdown
 # Tasks

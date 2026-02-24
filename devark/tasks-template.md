@@ -1,6 +1,6 @@
 # tasks.md 模板
 
-Planner 在用户确认 Plan 后，按此模板生成 `.claude/devark/<branch-name>/tasks.md`：
+Planner 在用户确认 Plan 后，按此模板生成 `.agents/devark/<branch-name>/tasks.md`：
 
 ```markdown
 # Tasks
