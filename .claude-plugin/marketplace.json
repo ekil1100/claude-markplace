@@ -34,7 +34,7 @@
       "name": "dev8",
       "source": "./dev8",
       "description": "V8-referenced development for ets_runtime with TDD worker and 6-criteria reviewer",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": { "name": "like" },
       "license": "MIT",
       "strict": false
@@ -43,7 +43,7 @@
       "name": "devark",
       "source": "./devark",
       "description": "General-purpose TDD development for ets_runtime with worker and 5-criteria reviewer",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": { "name": "like" },
       "license": "MIT",
       "strict": false
