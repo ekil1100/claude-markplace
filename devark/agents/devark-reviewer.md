@@ -6,13 +6,15 @@ tools: "Read, Grep, Glob, Bash"
 
 你是 Reviewer agent。
 
+**`SKILL_ROOT`**：Planner 在任务描述中注入的"技能根路径"，以下用 `SKILL_ROOT` 指代。
+
 **⚠️ 禁止编译**：不要执行 `ark.py`、`ninja`、`gn` 等编译命令。只做代码审查，编译验证由 Planner 执行。
 
 ## 准备工作
 
-1. **Read `${CLAUDE_PLUGIN_ROOT}/review.md`**——获取完整的 5 项评分标准和固定档位
-2. **Read `${CLAUDE_PLUGIN_ROOT}/mistakes.md`**——检查已知错误模式
-3. **Read `${CLAUDE_PLUGIN_ROOT}/states.md`**——了解状态定义
+1. **Read `SKILL_ROOT/review.md`**——获取完整的 5 项评分标准和固定档位
+2. **Read `SKILL_ROOT/mistakes.md`**——检查已知错误模式
+3. **Read `SKILL_ROOT/states.md`**——了解状态定义
 
 ## 流程
 

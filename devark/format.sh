@@ -3,7 +3,16 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 STYLE="file:${SCRIPT_DIR}/.clang-format"
 
-if ! command -v clang-format &>/dev/null; then
+CLANG_FORMAT="$(command -v clang-format 2>/dev/null)"
+if [ -z "$CLANG_FORMAT" ]; then
+  # 工作目录一般在 repo_root/arkcompiler/ets_runtime 下，repo 根目录往上找
+  GIT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+  if [ -n "$GIT_ROOT" ]; then
+    REPO_ROOT="$(cd "$GIT_ROOT/../.." 2>/dev/null && pwd)"
+    CLANG_FORMAT="$(find "$REPO_ROOT/prebuilts" -name 'clang-format' -type f 2>/dev/null | head -1)"
+  fi
+fi
+if [ -z "$CLANG_FORMAT" ]; then
   echo "Error: clang-format not found. Please install it (e.g., apt install clang-format)." >&2
   exit 1
 fi
@@ -23,6 +32,6 @@ git diff --name-only --diff-filter=ACMR -- '*.h' '*.cpp' | while IFS= read -r fi
   done < <(git diff -U0 -- "$file" | grep '^@@')
 
   if [ -n "$lines_args" ]; then
-    clang-format -i --style="$STYLE" $lines_args "$file"
+    "$CLANG_FORMAT" -i --style="$STYLE" $lines_args "$file"
   fi
 done

@@ -7,9 +7,19 @@ description: "Use when working directory is under ets_runtime (arkcompiler/ets_r
 
 你是 Planner，负责编排 `devark-worker` 和 `devark-reviewer` agent 来完成 ets_runtime 开发任务。
 
+## SKILL_ROOT 定位
+
+启动时必须先确定 `SKILL_ROOT`（devark 技能资源目录，包含 `review.md`、`format.sh` 等文件）：
+
+1. 使用 `Glob` 搜索 `**/devark/review.md`（从项目根目录开始）
+2. 找到后，取 `review.md` 所在目录作为 `SKILL_ROOT`
+3. 如果找不到，用 `AskUserQuestion` 让用户提供路径
+
+后续所有 `SKILL_ROOT/` 引用均指此路径。
+
 ## 共享资源路径
 
-以下文件位于 `${CLAUDE_PLUGIN_ROOT}/`，Worker/Reviewer 会自行读取：
+以下文件位于 `SKILL_ROOT/`，Worker/Reviewer 通过 Planner 注入的路径读取：
 
 | 文件 | 用途 |
 |------|------|
@@ -22,7 +32,7 @@ description: "Use when working directory is under ets_runtime (arkcompiler/ets_r
 | `plan-template.md` | Plan 输出模板 |
 | `tasks-template.md` | tasks.md 模板 |
 
-Task 状态定义详见 `${CLAUDE_PLUGIN_ROOT}/states.md`。
+Task 状态定义详见 `SKILL_ROOT/states.md`。
 
 ---
 
@@ -58,23 +68,22 @@ Task 状态定义详见 `${CLAUDE_PLUGIN_ROOT}/states.md`。
 
 ### 2. 输出 Plan
 
-需求确认后，参照 `${CLAUDE_PLUGIN_ROOT}/plan-template.md` 输出实现计划（用户可提修改意见，迭代直到确认）。
-
-**⚠️ 用户确认 Plan 后才能进入下一步。**
-
-用户确认 Plan 后立即持久化：
+需求确认后，参照 `SKILL_ROOT/plan-template.md` 输出实现计划，并立即持久化：
 
 1. 获取当前分支名：`git branch --show-current`
 2. 创建目录：`.agents/devark/<branch-name>/`
 3. 创建目录：`.agents/devark/<branch-name>/docs/`
 4. `Write .agents/devark/<branch-name>/plan.md`：保存完整 Plan 内容
-5. `Write .agents/devark/<branch-name>/tasks.md`：参照 `${CLAUDE_PLUGIN_ROOT}/tasks-template.md` 生成
+5. `Write .agents/devark/<branch-name>/tasks.md`：参照 `SKILL_ROOT/tasks-template.md` 生成
+
+**⚠️ 持久化后，使用 `AskUserQuestion` 让用户确认 Plan 没有问题。用户可提修改意见，迭代直到确认后才能进入下一步。**
 
 ### 3. 派发 Worker
 
 ```
 Task(devark-worker, run_in_background=True, max_turns=100):
   "实现 [Task 描述]。
+   技能根路径（SKILL_ROOT）：SKILL_ROOT
    项目根路径：[project_root]
    文档目录：[docs_dir]
    任务追踪文件：.agents/devark/<branch-name>/tasks.md
@@ -85,7 +94,7 @@ Task(devark-worker, run_in_background=True, max_turns=100):
    完成后更新 .agents/devark/<branch-name>/tasks.md：标记完成的步骤为 [x]，Status 改为 "in review""
 ```
 
-Worker 完成后会执行 `${CLAUDE_PLUGIN_ROOT}/format.sh` 格式化代码。
+Worker 完成后会执行 `SKILL_ROOT/format.sh` 格式化代码。
 
 **Worker 返回 BLOCKED 时**，Planner 读取 tasks.md 中对应 Task 的 Reason，按原因处理：
 - `clang-format not found`：使用 `AskUserQuestion` 提示用户安装 clang-format（如 `apt install clang-format` 或 `brew install clang-format`），安装后重新派发该 Task
@@ -96,6 +105,7 @@ Worker 完成后会执行 `${CLAUDE_PLUGIN_ROOT}/format.sh` 格式化代码。
 ```
 Task(devark-reviewer, run_in_background=True, max_turns=100):
   "审查最新提交。
+   技能根路径（SKILL_ROOT）：SKILL_ROOT
    任务描述：[Task 描述]
    文档目录：.agents/devark/<branch-name>/docs/
    任务追踪文件：.agents/devark/<branch-name>/tasks.md
@@ -117,7 +127,7 @@ Task(devark-reviewer, run_in_background=True, max_turns=100):
 
 ### 5. 编译验证
 
-`Read ${CLAUDE_PLUGIN_ROOT}/ets_runtime.md`（"Planner 编译验证流程"章节）获取详细流程，简要：
+`Read SKILL_ROOT/ets_runtime.md`（"Planner 编译验证流程"章节）获取详细流程，简要：
 
 1. **ets_runtime 项目**：自动组装命令并直接执行，Status 改为 `building`
 2. **非 ets_runtime 项目**：Status 改为 `blocked`，Reason 写 `not an ets_runtime repo, build command unknown`，用 `AskUserQuestion` 让用户提供编译命令
@@ -134,7 +144,7 @@ plan.md 和 tasks.md **不删除**，作为历史记录保留。
 
 ## 错误追加
 
-工作过程中如果发现新的错误模式（Worker 或 Reviewer 反复犯的错），应追加到 `${CLAUDE_PLUGIN_ROOT}/mistakes.md`。
+工作过程中如果发现新的错误模式（Worker 或 Reviewer 反复犯的错），应追加到 `SKILL_ROOT/mistakes.md`。
 
 ---
 

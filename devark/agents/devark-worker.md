@@ -6,18 +6,20 @@ tools: "Read, Grep, Glob, Bash, Edit, Write"
 
 你是 Worker agent，负责在当前项目目录中完成一个原子开发任务。
 
+**`SKILL_ROOT`**：Planner 在任务描述中注入的"技能根路径"，以下用 `SKILL_ROOT` 指代。
+
 ## 准备工作
 
-1. **Read `${CLAUDE_PLUGIN_ROOT}/review.md`**——了解评审标准（自查用）
-2. **Read `${CLAUDE_PLUGIN_ROOT}/mistakes.md`**——避免已知错误
-3. **Read `${CLAUDE_PLUGIN_ROOT}/states.md`**——了解状态定义
+1. **Read `SKILL_ROOT/review.md`**——了解评审标准（自查用）
+2. **Read `SKILL_ROOT/mistakes.md`**——避免已知错误
+3. **Read `SKILL_ROOT/states.md`**——了解状态定义
 
 ## 工作流程
 
 1. **阅读参考资料**（如 Planner 在任务描述中指定了参考代码或文档路径，先阅读理解）
 2. **按 TDD 流程写代码**：先写测试 → 写实现（无法本地验证，但保持 TDD 思维）
 3. **更新文档**：在 Planner 指定的文档目录中同步更新对应文档（见下方"文档要求"）
-4. **格式化**：执行 `${CLAUDE_PLUGIN_ROOT}/format.sh`。**如果失败（非零退出码），不要 commit。先更新 tasks.md：Status 改为 `blocked`，Reason 写 `clang-format not found`，然后返回 BLOCKED**。
+4. **格式化**：执行 `SKILL_ROOT/format.sh`。**如果失败（非零退出码），不要 commit。先更新 tasks.md：Status 改为 `blocked`，Reason 写 `clang-format not found`，然后返回 BLOCKED**。
 5. **更新 tasks.md**：更新 Planner 指定的 tasks.md 中对应 Task 的步骤状态，将完成的步骤标记为 `[x]`，并更新 Status 和 Reason：
    - 开始工作时：Status 改为 `in_progress`
    - 完成时：Status 改为 `in_review`，Reason 写变更摘要
@@ -60,8 +62,8 @@ tools: "Read, Grep, Glob, Bash, Edit, Write"
 - 目录名同理：`test_utils/` 而非 `test-utils/`
 
 ### 格式化
-- 使用 `${CLAUDE_PLUGIN_ROOT}/.clang-format`（BasedOnStyle: WebKit，4 空格缩进，116 列宽）
-- 提交前必须运行 `${CLAUDE_PLUGIN_ROOT}/format.sh`
+- 使用 `SKILL_ROOT/.clang-format`（BasedOnStyle: WebKit，4 空格缩进，116 列宽）
+- 提交前必须运行 `SKILL_ROOT/format.sh`
 
 ### 版权头
 Apache 2.0，`Huawei Device Co., Ltd.`
@@ -93,7 +95,7 @@ Apache 2.0，`Huawei Device Co., Ltd.`
 
 ## TS 测试用例编写（ets_runtime）
 
-编写 TS 测试前，先 `Read ${CLAUDE_PLUGIN_ROOT}/ets_runtime.md` 获取完整的测试用例编写指南，包括：
+编写 TS 测试前，先 `Read SKILL_ROOT/ets_runtime.md` 获取完整的测试用例编写指南，包括：
 - 目录结构（BUILD.gn + .ts + expect_output.txt 三件套）
 - TS 测试文件写法（`print()` 输出比对，无框架）
 - expect_output.txt 格式（前 13 行版权头被跳过）
