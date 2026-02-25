@@ -39,7 +39,13 @@ Task 状态定义详见 `${CLAUDE_PLUGIN_ROOT}/states.md`。
    - **开始新任务**：进入正常的需求确认流程（覆盖旧的 plan.md 和 tasks.md）
 4. **如果不存在**：进入正常的需求确认流程
 
-### 0. 需求确认
+### 0. 创建分支
+
+使用 `AskUserQuestion` 询问用户：
+- **新建分支**：询问分支名和基于哪个分支创建（默认当前分支），执行 `git checkout -b <branch-name> <base-branch>`
+- **在当前分支工作**：不做任何操作
+
+### 1. 需求确认
 
 在写任何代码之前，必须先完成需求确认：
 
@@ -50,7 +56,7 @@ Task 状态定义详见 `${CLAUDE_PLUGIN_ROOT}/states.md`。
 
 使用 `AskUserQuestion` 工具完成确认。
 
-### 1. 输出 Plan
+### 2. 输出 Plan
 
 需求确认后，参照 `${CLAUDE_PLUGIN_ROOT}/plan-template.md` 输出实现计划（用户可提修改意见，迭代直到确认）。
 
@@ -63,19 +69,6 @@ Task 状态定义详见 `${CLAUDE_PLUGIN_ROOT}/states.md`。
 3. 创建目录：`.agents/devark/<branch-name>/docs/`
 4. `Write .agents/devark/<branch-name>/plan.md`：保存完整 Plan 内容
 5. `Write .agents/devark/<branch-name>/tasks.md`：参照 `${CLAUDE_PLUGIN_ROOT}/tasks-template.md` 生成
-
-### 2. 创建分支（可选）
-
-根据 Plan 的 Goal 自动生成语义化分支名建议，格式 `<type>/<brief-description>`（如 `feat/add-int32-node`, `fix/deopt-check`）。
-
-使用 `AskUserQuestion` 展示建议分支名：
-- **创建建议分支**：执行 `git checkout -b <branch-name>`，然后将 `.agents/devark/` 下的持久化文件移动到新分支名目录
-- **在当前分支工作**：不做任何操作
-- **自定义分支名**：用户输入自定义名称后执行 `git checkout -b <custom-name>`，同样移动持久化文件
-
-创建新分支后需要更新持久化目录：
-1. 将 `.agents/devark/<old-branch>/` 重命名为 `.agents/devark/<new-branch>/`
-2. 后续所有操作使用新分支名作为路径
 
 ### 3. 派发 Worker
 
