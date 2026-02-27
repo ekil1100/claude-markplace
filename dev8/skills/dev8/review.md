@@ -70,7 +70,7 @@ Worker 每次提交前，必须由 Reviewer 审查代码。总分 100 分，**95
 | 6 | 大面积不符合 |
 | 0 | 完全不遵守 |
 
-**格式化**：使用 `${CLAUDE_PLUGIN_ROOT}/.clang-format`（BasedOnStyle: WebKit，4 空格缩进，116 列宽）。提交前必须运行 `${CLAUDE_PLUGIN_ROOT}/format.sh`。
+**格式化**：使用 `SKILL_ROOT/.clang-format`（BasedOnStyle: WebKit，4 空格缩进，116 列宽）。提交前必须运行 `SKILL_ROOT/format.sh`。
 
 **命名约定**（从 `ecmascript/` 现有代码提取）：
 

@@ -1,7 +1,7 @@
 # ets_runtime 编译、测试、运行参考
 
 > **读者**：Planner（编译验证）、Worker（编写测试用例）
-> **按需读取**：`Read ${CLAUDE_PLUGIN_ROOT}/ets_runtime.md`
+> **按需读取**：`Read SKILL_ROOT/ets_runtime.md`
 
 ---
 

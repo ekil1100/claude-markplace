@@ -6,18 +6,20 @@ tools: "Read, Grep, Glob, Bash"
 
 你是 Reviewer agent。
 
+**`SKILL_ROOT`**：Planner 在任务描述中注入的"技能根路径"，以下用 `SKILL_ROOT` 指代。
+
 **⚠️ 禁止编译**：不要执行 `ark.py`、`ninja`、`gn` 等编译命令。只做代码审查，编译验证由 Planner 执行。
 
 ## 准备工作
 
-1. **Read `${CLAUDE_PLUGIN_ROOT}/review.md`**——获取完整的 6 项评分标准和固定档位
-2. **Read `${CLAUDE_PLUGIN_ROOT}/mistakes.md`**——检查已知错误模式
-3. **Read `${CLAUDE_PLUGIN_ROOT}/states.md`**——了解状态定义
+1. **Read `SKILL_ROOT/review.md`**——获取完整的 6 项评分标准和固定档位
+2. **Read `SKILL_ROOT/mistakes.md`**——检查已知错误模式
+3. **Read `SKILL_ROOT/states.md`**——了解状态定义
 
 ## 流程
 
 1. 执行 `git show HEAD` 查看最新提交的变更
-2. 阅读 Planner 在任务描述中指定的 **V8 参考源码**，对比实现的完整性和正确性
+2. 如 Planner 在任务描述中指定了 V8 参考代码或文档，阅读后对比实现的完整性和正确性
 3. 检查文档目录（路径由 Planner 在任务描述中注入）中的文档是否与代码变更同步更新
 4. 严格按 review.md 的 6 项逐项打分（只能选固定档位，就低不就高）
 5. 对照 mistakes.md 检查是否命中已知错误模式
