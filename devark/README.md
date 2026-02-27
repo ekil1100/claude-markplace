@@ -39,27 +39,3 @@ cp -r /tmp/ekil-marketplace/devark/agents/* ~/.config/opencode/agents/
 
 将 `skills/` 和 `agents/` 目录复制到对应工具的技能发现路径即可（如 `.agents/skills/`、`.agents/agents/`）。
 
-## 使用方式
-
-在 ets_runtime 项目目录下进行开发时触发。Planner 启动时会自动通过 Glob 搜索 `**/devark/review.md` 定位资源目录。
-
-## 文件结构
-
-```text
-devark/
-├── README.md                # 本文件
-├── skills/
-│   └── devark/
-│       ├── SKILL.md         # Planner 主流程
-│       ├── review.md        # 评分标准详情
-│       ├── states.md        # Task 状态定义
-│       ├── mistakes.md      # 已知错误模式
-│       ├── format.sh        # clang-format 包装脚本
-│       ├── .clang-format    # 格式化配置
-│       ├── ets_runtime.md   # ets_runtime 编译/测试参考
-│       ├── plan-template.md # Plan 输出模板
-│       └── tasks-template.md # tasks.md 模板
-└── agents/
-    ├── devark-worker.md     # Worker agent
-    └── devark-reviewer.md   # Reviewer agent
-```
