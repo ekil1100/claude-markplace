@@ -1,0 +1,416 @@
+{
+  "metadata": {
+    "skill_name": "devark",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-03-09T02:30:49Z",
+    "evals_run": [
+      0,
+      1
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 14,
+        "failed": 0,
+        "total": 14,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Stayed on the current branch",
+          "passed": true,
+          "evidence": "current branch: main"
+        },
+        {
+          "text": "Persisted plan.md",
+          "passed": true,
+          "evidence": "/home/like/workspace/claude-markplace/devark/skills/devark-workspace/iteration-2/eval-0-clamp-warmup-count/with_skill/run-1/outputs/plan.md"
+        },
+        {
+          "text": "Persisted tasks.md",
+          "passed": true,
+          "evidence": "/home/like/workspace/claude-markplace/devark/skills/devark-workspace/iteration-2/eval-0-clamp-warmup-count/with_skill/run-1/outputs/tasks.md"
+        },
+        {
+          "text": "Plan mentions the task-specific work item",
+          "passed": true,
+          "evidence": "ClampWarmupCount"
+        },
+        {
+          "text": "Task tracker reached done/completed state",
+          "passed": true,
+          "evidence": "Status line checked in tasks.md"
+        },
+        {
+          "text": "Task tracker progress is fully updated",
+          "passed": true,
+          "evidence": "Progress: 1/1 completed"
+        },
+        {
+          "text": "Task-specific doc was updated",
+          "passed": true,
+          "evidence": "task_1.md"
+        },
+        {
+          "text": "Build verification passed with the expected target",
+          "passed": true,
+          "evidence": "status=ok target=clamp_warmup_countJitAction"
+        },
+        {
+          "text": "Created at least one new commit",
+          "passed": true,
+          "evidence": "git rev-list --count HEAD = 2"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/ecmascript/interpreter/warmup_counter.cpp",
+          "passed": true,
+          "evidence": "count < 0"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/ecmascript/interpreter/warmup_counter.cpp",
+          "passed": true,
+          "evidence": "count > 10"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/test/jittest/BUILD.gn",
+          "passed": true,
+          "evidence": "clamp_warmup_count:clamp_warmup_countJitAction"
+        },
+        {
+          "text": "exists arkcompiler/ets_runtime/test/jittest/clamp_warmup_count/clamp_warmup_count.ts",
+          "passed": true,
+          "evidence": "exists"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/test/jittest/clamp_warmup_count/expect_output.txt",
+          "passed": true,
+          "evidence": "10"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 14,
+        "failed": 0,
+        "total": 14,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Stayed on the current branch",
+          "passed": true,
+          "evidence": "current branch: main"
+        },
+        {
+          "text": "Persisted plan.md",
+          "passed": true,
+          "evidence": "/home/like/workspace/claude-markplace/devark/skills/devark-workspace/iteration-2/eval-1-resume-normalize-tagged-value/with_skill/run-1/outputs/plan.md"
+        },
+        {
+          "text": "Persisted tasks.md",
+          "passed": true,
+          "evidence": "/home/like/workspace/claude-markplace/devark/skills/devark-workspace/iteration-2/eval-1-resume-normalize-tagged-value/with_skill/run-1/outputs/tasks.md"
+        },
+        {
+          "text": "Plan mentions the task-specific work item",
+          "passed": true,
+          "evidence": "NormalizeTaggedValue, existing plan"
+        },
+        {
+          "text": "Task tracker reached done/completed state",
+          "passed": true,
+          "evidence": "Status line checked in tasks.md"
+        },
+        {
+          "text": "Task tracker progress is fully updated",
+          "passed": true,
+          "evidence": "Progress: 1/1 completed"
+        },
+        {
+          "text": "Task-specific doc was updated",
+          "passed": true,
+          "evidence": "task_1_worker_round_1.md, build_round_1.md"
+        },
+        {
+          "text": "Build verification passed with the expected target",
+          "passed": true,
+          "evidence": "status=ok target=normalize_tagged_valueJitAction"
+        },
+        {
+          "text": "Created at least one new commit",
+          "passed": true,
+          "evidence": "git rev-list --count HEAD = 2"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/ecmascript/interpreter/tagged_value_utils.cpp",
+          "passed": true,
+          "evidence": "value < 0"
+        },
+        {
+          "text": "contains_any arkcompiler/ets_runtime/ecmascript/interpreter/tagged_value_utils.cpp",
+          "passed": true,
+          "evidence": "one alternative matched"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/test/jittest/BUILD.gn",
+          "passed": true,
+          "evidence": "normalize_tagged_value:normalize_tagged_valueJitAction"
+        },
+        {
+          "text": "exists arkcompiler/ets_runtime/test/jittest/normalize_tagged_value/normalize_tagged_value.ts",
+          "passed": true,
+          "evidence": "exists"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/test/jittest/normalize_tagged_value/expect_output.txt",
+          "passed": true,
+          "evidence": "8"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5714,
+        "passed": 8,
+        "failed": 6,
+        "total": 14,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Stayed on the current branch",
+          "passed": true,
+          "evidence": "current branch: main"
+        },
+        {
+          "text": "Persisted plan.md",
+          "passed": false,
+          "evidence": "/home/like/workspace/claude-markplace/devark/skills/devark-workspace/iteration-2/eval-0-clamp-warmup-count/without_skill/run-1/outputs/plan.md"
+        },
+        {
+          "text": "Persisted tasks.md",
+          "passed": false,
+          "evidence": "/home/like/workspace/claude-markplace/devark/skills/devark-workspace/iteration-2/eval-0-clamp-warmup-count/without_skill/run-1/outputs/tasks.md"
+        },
+        {
+          "text": "Plan mentions the task-specific work item",
+          "passed": false,
+          "evidence": "ClampWarmupCount"
+        },
+        {
+          "text": "Task tracker reached done/completed state",
+          "passed": false,
+          "evidence": "Status line checked in tasks.md"
+        },
+        {
+          "text": "Task tracker progress is fully updated",
+          "passed": false,
+          "evidence": "Progress: 1/1 completed"
+        },
+        {
+          "text": "Task-specific doc was updated",
+          "passed": false,
+          "evidence": "warmup_counter.md"
+        },
+        {
+          "text": "Build verification passed with the expected target",
+          "passed": true,
+          "evidence": "status=ok target=clamp_warmup_countJitAction"
+        },
+        {
+          "text": "Created at least one new commit",
+          "passed": true,
+          "evidence": "git rev-list --count HEAD = 2"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/ecmascript/interpreter/warmup_counter.cpp",
+          "passed": true,
+          "evidence": "count < 0"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/ecmascript/interpreter/warmup_counter.cpp",
+          "passed": true,
+          "evidence": "count > 10"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/test/jittest/BUILD.gn",
+          "passed": true,
+          "evidence": "clamp_warmup_count:clamp_warmup_countJitAction"
+        },
+        {
+          "text": "exists arkcompiler/ets_runtime/test/jittest/clamp_warmup_count/clamp_warmup_count.ts",
+          "passed": true,
+          "evidence": "exists"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/test/jittest/clamp_warmup_count/expect_output.txt",
+          "passed": true,
+          "evidence": "10"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.9286,
+        "passed": 13,
+        "failed": 1,
+        "total": 14,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Stayed on the current branch",
+          "passed": true,
+          "evidence": "current branch: main"
+        },
+        {
+          "text": "Persisted plan.md",
+          "passed": true,
+          "evidence": "/home/like/workspace/claude-markplace/devark/skills/devark-workspace/iteration-2/eval-1-resume-normalize-tagged-value/without_skill/run-1/outputs/plan.md"
+        },
+        {
+          "text": "Persisted tasks.md",
+          "passed": true,
+          "evidence": "/home/like/workspace/claude-markplace/devark/skills/devark-workspace/iteration-2/eval-1-resume-normalize-tagged-value/without_skill/run-1/outputs/tasks.md"
+        },
+        {
+          "text": "Plan mentions the task-specific work item",
+          "passed": true,
+          "evidence": "NormalizeTaggedValue, existing plan"
+        },
+        {
+          "text": "Task tracker reached done/completed state",
+          "passed": true,
+          "evidence": "Status line checked in tasks.md"
+        },
+        {
+          "text": "Task tracker progress is fully updated",
+          "passed": true,
+          "evidence": "Progress: 1/1 completed"
+        },
+        {
+          "text": "Task-specific doc was updated",
+          "passed": false,
+          "evidence": "tagged_value_utils.md, normalize_tagged_value.md"
+        },
+        {
+          "text": "Build verification passed with the expected target",
+          "passed": true,
+          "evidence": "status=ok target=normalize_tagged_valueJitAction"
+        },
+        {
+          "text": "Created at least one new commit",
+          "passed": true,
+          "evidence": "git rev-list --count HEAD = 2"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/ecmascript/interpreter/tagged_value_utils.cpp",
+          "passed": true,
+          "evidence": "value < 0"
+        },
+        {
+          "text": "contains_any arkcompiler/ets_runtime/ecmascript/interpreter/tagged_value_utils.cpp",
+          "passed": true,
+          "evidence": "one alternative matched"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/test/jittest/BUILD.gn",
+          "passed": true,
+          "evidence": "normalize_tagged_value:normalize_tagged_valueJitAction"
+        },
+        {
+          "text": "exists arkcompiler/ets_runtime/test/jittest/normalize_tagged_value/normalize_tagged_value.ts",
+          "passed": true,
+          "evidence": "exists"
+        },
+        {
+          "text": "contains arkcompiler/ets_runtime/test/jittest/normalize_tagged_value/expect_output.txt",
+          "passed": true,
+          "evidence": "8"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.75,
+        "stddev": 0.2526,
+        "min": 0.5714,
+        "max": 0.9286
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.25",
+      "time_seconds": "+0.0",
+      "tokens": "+0"
+    }
+  },
+  "notes": []
+}

@@ -19,7 +19,7 @@ tools: "Read, Grep, Glob, Bash, Edit, Write"
 1. **阅读参考资料**（如 Planner 在任务描述中指定了参考代码或文档路径，先阅读理解）
 2. **按 TDD 流程写代码**：先写测试 → 写实现（无法本地验证，但保持 TDD 思维）
 3. **更新文档**：在 Planner 指定的文档目录中同步更新对应文档（见下方"文档要求"）
-4. **格式化**：执行 `SKILL_ROOT/format.sh`。**如果失败（非零退出码），不要 commit。先更新 tasks.md：Status 改为 `blocked`，Reason 写 `clang-format not found`，然后返回 BLOCKED**。
+4. **格式化**：执行 `SKILL_ROOT/format.sh`。**如果失败（非零退出码），不要 commit。先更新 tasks.md：Status 改为 `blocked`；若输出明确提示 `clang-format not found`，Reason 写该值，否则写实际格式化失败原因，然后返回 BLOCKED**。
 5. **更新 tasks.md**：更新 Planner 指定的 tasks.md 中对应 Task 的步骤状态，将完成的步骤标记为 `[x]`，并更新 Status 和 Reason：
    - 开始工作时：Status 改为 `in_progress`
    - 完成时：Status 改为 `in_review`，Reason 写变更摘要
@@ -33,7 +33,7 @@ tools: "Read, Grep, Glob, Bash, Edit, Write"
 
 成功时返回：
 - 变更说明（做了什么、为什么这样做）
-- git diff --cached 摘要（关键变更，不需要全文）
+- 已提交变更摘要（关键变更，不需要全文；可基于 `git show --stat HEAD` 总结）
 - 建议的 commit message（Conventional Commits 格式：`<type>(<scope>): <description>`）
 
 遇到无法解决的问题时返回：
@@ -76,7 +76,7 @@ Apache 2.0，`Huawei Device Co., Ltd.`
 
 ## 文档要求
 
-文档占 Review 评分 5 分，必须与代码同步更新。
+文档必须与代码同步更新。文档缺失会降低设计质量评价，也会让 Reviewer 难以确认实现边界。
 
 **位置**：由 Planner 在任务描述中指定（`.agents/devark/<branch-name>/docs/`）
 
@@ -86,12 +86,9 @@ Apache 2.0，`Huawei Device Co., Ltd.`
 
 **文件命名**：与模块对应，如 `ir.md`、`graph_builder.md`、`regalloc.md`
 
-**评分标准**：
-| 分数 | 标准 |
-|------|------|
-| 5 | 文档已更新，设计说明清晰 |
-| 3 | 文档有更新但不够详细 |
-| 0 | 代码改了文档没跟上 |
+**验收预期**：
+- 文档已更新，且能解释关键设计与接口
+- 文档可以简短，但不能缺席或与代码脱节
 
 ## TS 测试用例编写（ets_runtime）
 

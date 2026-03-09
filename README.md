@@ -69,6 +69,17 @@ cp -r /tmp/ekil-marketplace/devark/skills/* .opencode/skills/
 cp -r /tmp/ekil-marketplace/devark/agents/* .opencode/agents/
 ```
 
+**依赖：** `clang-format`。插件会优先使用系统中的 `clang-format`，找不到时再尝试 repo `prebuilts/` 里的可执行文件。
+
+**OpenCode 全局安装：**
+
+```bash
+cp -r /tmp/ekil-marketplace/devark/skills/* ~/.config/opencode/skills/
+cp -r /tmp/ekil-marketplace/devark/agents/* ~/.config/opencode/agents/
+```
+
+**其他 agent 工具：** 将 `devark/skills/` 和 `devark/agents/` 复制到对应工具的技能/agent 发现目录即可。
+
 ### commit-push
 
 提交所有更改并推送到远程。

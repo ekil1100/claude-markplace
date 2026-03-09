@@ -1,34 +1,34 @@
 ---
 name: devark
-description: "Use when working directory is under ets_runtime (arkcompiler/ets_runtime) for general development. Orchestrates TDD worker and 5-criteria reviewer agents."
+description: "General-purpose ets_runtime development orchestrator for feature work, bug fixes, refactors, and tests under arkcompiler/ets_runtime. Use when Codex should clarify requirements, persist a plan and task list, coordinate implementation/review loops, and finish with build verification for ets_runtime changes."
 ---
 
 # devark — ets_runtime Development Orchestrator
 
-你是 Planner，负责编排 `devark-worker` 和 `devark-reviewer` agent 来完成 ets_runtime 开发任务。
+负责把 ets_runtime 开发任务拆成可恢复、可审查的原子任务，并协调实现、评审、编译验证。
 
 ## SKILL_ROOT 定位
 
-启动时必须先确定 `SKILL_ROOT`（devark 技能资源目录，包含 `review.md`、`format.sh` 等文件）：
+启动时先确定 `SKILL_ROOT`（devark 资源目录，包含 `review.md`、`format.sh` 等文件）：
 
-1. 使用 `Glob` 搜索 `**/devark/review.md`（从项目根目录开始）
-2. 找到后，取 `review.md` 所在目录作为 `SKILL_ROOT`
-3. 如果找不到，用 `AskUserQuestion` 让用户提供路径
+1. 从项目根目录搜索 `**/devark/review.md`
+2. 将 `review.md` 所在目录作为 `SKILL_ROOT`
+3. 如果找不到，向用户确认已安装的 devark 资源路径
 
 后续所有 `SKILL_ROOT/` 引用均指此路径。
 
 ## 共享资源路径
 
-以下文件位于 `SKILL_ROOT/`，Worker/Reviewer 通过 Planner 注入的路径读取：
+以下文件位于 `SKILL_ROOT/`，按需读取，不要一次性全部加载：
 
 | 文件 | 用途 |
 |------|------|
-| `review.md` | 5 项评分标准（三方共享） |
-| `mistakes.md` | 常见错误（可追加，三方共享） |
+| `review.md` | 5 项评分标准 |
+| `mistakes.md` | 常见错误模式（可追加） |
 | `.clang-format` | 代码格式化配置 |
 | `format.sh` | 格式化 git 工作区中已修改的 C/C++ 文件（仅修改行） |
 | `ets_runtime.md` | ets_runtime 编译、测试、运行参考（按需读取） |
-| `states.md` | Task 状态定义（三方共享） |
+| `states.md` | Task 状态定义 |
 | `plan-template.md` | Plan 输出模板 |
 | `tasks-template.md` | tasks.md 模板 |
 
@@ -44,14 +44,12 @@ Task 状态定义详见 `SKILL_ROOT/states.md`。
 
 1. 获取当前分支名：`git branch --show-current`
 2. 检查 `.agents/devark/<branch-name>/plan.md` 是否存在
-3. **如果存在**：`Read plan.md` 和 `tasks.md`，用 `AskUserQuestion` 询问用户：
-   - **继续未完成的任务**：根据各 Task 的 Status 和 Reason 决定恢复动作（参照下方"Task 状态定义"表），从对应步骤继续执行
-   - **开始新任务**：进入正常的需求确认流程（覆盖旧的 plan.md 和 tasks.md）
+3. **如果存在**：读取 `plan.md` 和 `tasks.md`，询问用户是继续未完成的任务，还是开始新任务覆盖旧文件
 4. **如果不存在**：进入正常的需求确认流程
 
 ### 0. 创建分支
 
-使用 `AskUserQuestion` 询问用户：
+先与用户确认工作分支：
 - **新建分支**：询问分支名和基于哪个分支创建（默认当前分支），执行 `git checkout -b <branch-name> <base-branch>`
 - **在当前分支工作**：不做任何操作
 
@@ -64,7 +62,7 @@ Task 状态定义详见 `SKILL_ROOT/states.md`。
 3. **识别风险**：架构差异、依赖关系等可能导致的问题
 4. **确认参考资料**：如有参考代码或设计文档，确认具体路径
 
-使用 `AskUserQuestion` 工具完成确认。
+只在会影响设计或验证结果的点上追问用户，避免把简单任务问成访谈。
 
 ### 2. 输出 Plan
 
@@ -73,49 +71,62 @@ Task 状态定义详见 `SKILL_ROOT/states.md`。
 1. 获取当前分支名：`git branch --show-current`
 2. 创建目录：`.agents/devark/<branch-name>/`
 3. 创建目录：`.agents/devark/<branch-name>/docs/`
-4. `Write .agents/devark/<branch-name>/plan.md`：保存完整 Plan 内容
-5. `Write .agents/devark/<branch-name>/tasks.md`：参照 `SKILL_ROOT/tasks-template.md` 生成
+4. 写入 `.agents/devark/<branch-name>/plan.md`：保存完整 Plan 内容
+5. 写入 `.agents/devark/<branch-name>/tasks.md`：参照 `SKILL_ROOT/tasks-template.md` 生成
 
-**⚠️ 持久化后，使用 `AskUserQuestion` 让用户确认 Plan 没有问题。用户可提修改意见，迭代直到确认后才能进入下一步。**
+**⚠️ 持久化后先让用户确认 Plan 没有问题，再进入下一步。**
+
+### 2.5 无命名 agent 时的本地 fallback
+
+如果当前环境不支持按名称派发 `devark-worker` / `devark-reviewer`，Planner 仍要维护**同一套状态机、产物位置和提交边界**，不要退化成临时手工流程。
+
+- **本地执行 Worker 时**，严格按 `devark-worker` 的 contract 自行完成：
+  1. 先把当前 Task 状态改为 `in_progress`
+  2. 参考 `SKILL_ROOT/review.md`、`mistakes.md`、`states.md`，按 TDD 顺序完成测试和实现
+  3. 把任务文档写到 `.agents/devark/<branch-name>/docs/`，不要把这类工作文档写到源码目录或 repo 根目录
+  4. 优先使用仓库正式测试布局（如 `test/jittest/...`），不要用临时 C++ harness、repo-local 草稿文档或一次性脚本代替最终交付；若临时验证文件确实必要，验证后删除，不能留在最终工作区状态里
+  5. 执行 `SKILL_ROOT/format.sh`
+  6. 更新 `tasks.md`：完成后置为 `in_review`，阻塞时置为 `blocked`
+  7. `git add` 代码、文档和任务跟踪文件，并创建一次原子 commit；**不要把变更留在未提交状态下进入 Review 或结束任务**
+
+- **本地执行 Reviewer 时**，严格按 `devark-reviewer` 的 contract 自行完成：
+  1. 基于 `git show HEAD` 审查最近一次提交，而不是审查未提交工作区
+  2. 按 `review.md` 固定档位打分，并对照 `mistakes.md`
+  3. 把 review 记录写到 `.agents/devark/<branch-name>/docs/review_round_<N>.md`（或等价命名）
+  4. 通过则把 Task 置为 `completed`，不通过则置为 `rework`
+  5. 如果当前没有可审查的提交，先回到 Worker 流程完成 commit，再进入 Review
+  6. 如果 review 记录、`tasks.md` 或后续 build 记录导致工作区再次变脏，补一个仅包含 workflow 元数据的 follow-up commit（例如 `chore(devark): persist review/build state for task N`）；不要以脏工作区结束任务
 
 ### 3. 派发 Worker
 
-```
-Task(devark-worker, run_in_background=True, max_turns=100):
-  "实现 [Task 描述]。
-   技能根路径（SKILL_ROOT）：SKILL_ROOT
-   项目根路径：[project_root]
-   文档目录：[docs_dir]
-   任务追踪文件：.agents/devark/<branch-name>/tasks.md
-   当前任务编号：Task N
-   参考资料：[如有参考代码或文档，注明路径]
-   **禁止编译**
+优先将每个原子任务委派给 `devark-worker`；如果当前环境不支持命名 worker，就按上面的本地 fallback 规则自行实现。
 
-   完成后更新 .agents/devark/<branch-name>/tasks.md：标记完成的步骤为 [x]，Status 改为 "in review""
-```
+委派时提供以下上下文：
+- 技能根路径（`SKILL_ROOT`）
+- 项目根路径（`project_root`）
+- 文档目录（`docs_dir`）
+- 任务追踪文件（`.agents/devark/<branch-name>/tasks.md`）
+- 当前任务编号（`Task N`）
+- 参考资料路径（如有）
+- `禁止编译`
 
-Worker 完成后会执行 `SKILL_ROOT/format.sh` 格式化代码。
+Worker 完成后会执行 `SKILL_ROOT/format.sh` 格式化代码。本地 fallback 也必须执行同样的格式化、任务状态更新和 commit。
 
-**Worker 返回 BLOCKED 时**，Planner 读取 tasks.md 中对应 Task 的 Reason，按原因处理：
-- `clang-format not found`：使用 `AskUserQuestion` 提示用户安装 clang-format（如 `apt install clang-format` 或 `brew install clang-format`），安装后重新派发该 Task
-- 其他原因：根据具体情况决定（提示用户 / 调整任务 / 升级决策）
+**Worker 返回 `BLOCKED` 时**，读取 tasks.md 中对应 Task 的 `Reason`，按原因处理：
+- `clang-format not found`：提示用户安装 `clang-format`（如 `apt install clang-format` 或 `brew install clang-format`），安装后重新派发该 Task
+- 其他原因：根据具体情况提示用户、调整任务或升级决策
 
 ### 4. 派发 Reviewer
 
-```
-Task(devark-reviewer, run_in_background=True, max_turns=100):
-  "审查最新提交。
-   技能根路径（SKILL_ROOT）：SKILL_ROOT
-   任务描述：[Task 描述]
-   文档目录：.agents/devark/<branch-name>/docs/
-   任务追踪文件：.agents/devark/<branch-name>/tasks.md
-   当前任务编号：Task N
-   参考资料：[如有参考代码或文档，注明路径]
+优先将代码审查委派给 `devark-reviewer`；如果当前环境不支持命名 reviewer，就按上面的本地 fallback 规则执行一次完整 Review。
 
-   Review 完成后更新 .agents/devark/<branch-name>/tasks.md：
-   - 通过（≥95）：Status 改为 "completed"，更新 Progress
-   - 未通过（<95）：追加本轮扣分摘要"
-```
+委派时提供以下上下文：
+- 技能根路径（`SKILL_ROOT`）
+- 任务描述
+- 文档目录（`.agents/devark/<branch-name>/docs/`）
+- 任务追踪文件（`.agents/devark/<branch-name>/tasks.md`）
+- 当前任务编号（`Task N`）
+- 参考资料路径（如有）
 
 **Review 结果处理**：
 
@@ -130,9 +141,11 @@ Task(devark-reviewer, run_in_background=True, max_turns=100):
 `Read SKILL_ROOT/ets_runtime.md`（"Planner 编译验证流程"章节）获取详细流程，简要：
 
 1. **ets_runtime 项目**：自动组装命令并直接执行，Status 改为 `building`
-2. **非 ets_runtime 项目**：Status 改为 `blocked`，Reason 写 `not an ets_runtime repo, build command unknown`，用 `AskUserQuestion` 让用户提供编译命令
+2. **非 ets_runtime 项目**：Status 改为 `blocked`，Reason 写 `not an ets_runtime repo, build command unknown`，向用户询问编译命令
 3. **编译通过**：Status 改为 `done`
 4. **编译失败**：Status 改为 `build_failed`，Reason 写编译错误摘要，附错误信息重新派发 Worker
+
+本地 fallback 完成编译验证后，如果 `tasks.md`、review/build 文档或其他 workflow 元数据发生变化，也要把这些变化持久化，不要只把代码提交掉而把状态文件留在未提交状态。
 
 ### 6. DONE
 
@@ -152,4 +165,5 @@ plan.md 和 tasks.md **不删除**，作为历史记录保留。
 
 - Worker **禁止编译**，编译由 Planner 在步骤 5 统一执行
 - Reviewer **禁止编译**，只做代码审查
+- 本地 fallback 也要遵守 Worker / Reviewer 的职责边界，不能因为没有命名 agent 就跳过 `.agents/devark/<branch>/docs/`、`tasks.md` 或 commit
 - 路径等由 Planner 在 dispatch 时注入，不要硬编码
