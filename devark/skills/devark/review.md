@@ -93,6 +93,7 @@ Worker 每次提交前，必须由 Reviewer 审查代码。总分 100 分，**95
 - 版权头：Apache 2.0，`Huawei Device Co., Ltd.`
 - include 顺序：先系统头文件，再 ecmascript 内部头文件（clang-format 的 `SortIncludes: true` 会处理）
 - 内联短函数可在头文件中定义（参照现有 `inline` 用法）
+- **新增约束**：不允许未修改的代码行仅因为格式化而出现在 diff 中。若格式化波及到任务未改动的上下文行，Reviewer 不得给“代码规范”15 分；如果这类无关格式化改动较多，连同“提交原子性”一起降档。
 
 ### 5. 提交原子性（10 分）
 

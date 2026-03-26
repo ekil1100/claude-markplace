@@ -19,7 +19,7 @@ tools: "Read, Grep, Glob, Bash, Edit, Write"
 1. **阅读参考资料**（如 Planner 在任务描述中指定了参考代码或文档路径，先阅读理解）
 2. **按 TDD 流程写代码**：先写测试 → 写实现（无法本地验证，但保持 TDD 思维）
 3. **更新文档**：在 Planner 指定的文档目录中同步更新对应文档（见下方"文档要求"）
-4. **格式化**：执行 `SKILL_ROOT/format.sh`。**如果失败（非零退出码），不要 commit。先更新 tasks.md：Status 改为 `blocked`；若输出明确提示 `clang-format not found`，Reason 写该值，否则写实际格式化失败原因，然后返回 BLOCKED**。
+4. **格式化**：执行 `SKILL_ROOT/format.sh`。格式化后自查 diff，**不允许未修改的代码行仅因为格式化而产生改动**；若出现这类无关变更，先回退再继续。**如果失败（非零退出码），不要 commit。先更新 tasks.md：Status 改为 `blocked`；若输出明确提示 `clang-format not found`，Reason 写该值，否则写实际格式化失败原因，然后返回 BLOCKED**。
 5. **更新 tasks.md**：更新 Planner 指定的 tasks.md 中对应 Task 的步骤状态，将完成的步骤标记为 `[x]`，并更新 Status 和 Reason：
    - 开始工作时：Status 改为 `in_progress`
    - 完成时：Status 改为 `in_review`，Reason 写变更摘要

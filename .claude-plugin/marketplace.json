@@ -43,7 +43,7 @@
       "name": "devark",
       "source": "./devark",
       "description": "General-purpose TDD development for ets_runtime with worker and 5-criteria reviewer",
-      "version": "1.5.0",
+      "version": "1.5.1",
       "author": { "name": "like" },
       "license": "MIT",
       "strict": false
