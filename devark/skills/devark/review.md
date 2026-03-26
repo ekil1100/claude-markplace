@@ -99,9 +99,9 @@ Worker 每次提交前，必须由 Reviewer 审查代码。总分 100 分，**95
 
 | 分数 | 标准 |
 |------|------|
-| 10 | 一个提交做一件事，可独立 revert，commit message 清晰 |
-| 8 | 基本原子化，commit message 可以更精确 |
-| 5 | 一个提交混了多件事 |
+| 10 | 一个 Task 最终只有一个提交，且该提交只做一件事，可独立 revert，commit message 清晰 |
+| 8 | 基本原子化，但同一 Task 仍有轻微的提交边界问题 |
+| 5 | 一个提交混了多件事，或同一 Task 被拆成多个提交 |
 | 0 | 大量无关改动混在一起 |
 
 **Commit message 格式**（Conventional Commits，英文）：
@@ -119,6 +119,7 @@ scope: 模块名（由 Planner 在 plan 中确定）
 检查点：
 - 单独 revert 此提交是否破坏构建
 - 提交中是否混入了不相关的改动
+- 同一 Task 是否被拆成了代码提交 + `persist review/build state` 之类的 follow-up commit
 - commit message 是否符合上述格式
 
 ---

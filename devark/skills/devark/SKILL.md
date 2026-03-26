@@ -87,7 +87,7 @@ Task 状态定义详见 `SKILL_ROOT/states.md`。
   4. 优先使用仓库正式测试布局（如 `test/jittest/...`），不要用临时 C++ harness、repo-local 草稿文档或一次性脚本代替最终交付；若临时验证文件确实必要，验证后删除，不能留在最终工作区状态里
   5. 执行 `SKILL_ROOT/format.sh`
   6. 更新 `tasks.md`：完成后置为 `in_review`，阻塞时置为 `blocked`
-  7. `git add` 代码、文档和任务跟踪文件，并创建一次原子 commit；**不要把变更留在未提交状态下进入 Review 或结束任务**
+  7. `git add` 代码、文档和任务跟踪文件；**首轮创建 Task commit，后续返工、review/build 元数据更新都通过 `git commit --amend` 折叠回同一个 Task commit**。不要把变更留在未提交状态下进入 Review 或结束任务，也不要为同一 Task 追加 `persist review/build state` 之类的 follow-up commit
 
 - **本地执行 Reviewer 时**，严格按 `devark-reviewer` 的 contract 自行完成：
   1. 基于 `git show HEAD` 审查最近一次提交，而不是审查未提交工作区
@@ -95,7 +95,7 @@ Task 状态定义详见 `SKILL_ROOT/states.md`。
   3. 把 review 记录写到 `.agents/devark/<branch-name>/docs/review_round_<N>.md`（或等价命名）
   4. 通过则把 Task 置为 `completed`，不通过则置为 `rework`
   5. 如果当前没有可审查的提交，先回到 Worker 流程完成 commit，再进入 Review
-  6. 如果 review 记录、`tasks.md` 或后续 build 记录导致工作区再次变脏，补一个仅包含 workflow 元数据的 follow-up commit（例如 `chore(devark): persist review/build state for task N`）；不要以脏工作区结束任务
+  6. 如果 review 记录、`tasks.md` 或后续 build 记录导致工作区再次变脏，`git add` 这些 workflow 文件并执行 `git commit --amend --no-edit`，把状态变化折叠回当前 Task commit；不要再追加 `chore(devark): persist review/build state for task N` 这类 follow-up commit
 
 ### 3. 派发 Worker
 
@@ -110,7 +110,7 @@ Task 状态定义详见 `SKILL_ROOT/states.md`。
 - 参考资料路径（如有）
 - `禁止编译`
 
-Worker 完成后会执行 `SKILL_ROOT/format.sh` 格式化代码。本地 fallback 也必须执行同样的格式化、任务状态更新和 commit。
+Worker 完成后会执行 `SKILL_ROOT/format.sh` 格式化代码。本地 fallback 也必须执行同样的格式化、任务状态更新和 commit，并保证**同一 Task 最终只保留一个 commit**。
 
 **Worker 返回 `BLOCKED` 时**，读取 tasks.md 中对应 Task 的 `Reason`，按原因处理：
 - `clang-format not found`：提示用户安装 `clang-format`（如 `apt install clang-format` 或 `brew install clang-format`），安装后重新派发该 Task
@@ -136,6 +136,8 @@ Worker 完成后会执行 `SKILL_ROOT/format.sh` 格式化代码。本地 fallba
 | <95 分（第 1-3 轮） | 将 Reviewer 的修复建议附给 Worker，重新派发 |
 | <95 分（第 3 轮后） | 升级给用户决策 |
 
+返工轮继续沿用当前 Task commit，修复后通过 `git commit --amend` 更新；不要为同一 Task 叠加新的代码 commit。
+
 ### 5. 编译验证
 
 `Read SKILL_ROOT/ets_runtime.md`（"Planner 编译验证流程"章节）获取详细流程，简要：
@@ -145,7 +147,7 @@ Worker 完成后会执行 `SKILL_ROOT/format.sh` 格式化代码。本地 fallba
 3. **编译通过**：Status 改为 `done`
 4. **编译失败**：Status 改为 `build_failed`，Reason 写编译错误摘要，附错误信息重新派发 Worker
 
-本地 fallback 完成编译验证后，如果 `tasks.md`、review/build 文档或其他 workflow 元数据发生变化，也要把这些变化持久化，不要只把代码提交掉而把状态文件留在未提交状态。
+本地 fallback 完成编译验证后，如果 `tasks.md`、review/build 文档或其他 workflow 元数据发生变化，也要把这些变化持久化；持久化方式应为 `git commit --amend --no-edit` 折叠回当前 Task commit，不要只把代码提交掉而把状态文件留在未提交状态，也不要再追加单独的 workflow commit。
 
 ### 6. DONE
 
@@ -165,5 +167,6 @@ plan.md 和 tasks.md **不删除**，作为历史记录保留。
 
 - Worker **禁止编译**，编译由 Planner 在步骤 5 统一执行
 - Reviewer **禁止编译**，只做代码审查
+- **每个 Task 最终只保留一个 commit**；review/build/workflow 元数据通过 amend 折叠进该 Task commit，禁止追加 `persist review/build state` 一类独立 commit
 - 本地 fallback 也要遵守 Worker / Reviewer 的职责边界，不能因为没有命名 agent 就跳过 `.agents/devark/<branch>/docs/`、`tasks.md` 或 commit
 - 路径等由 Planner 在 dispatch 时注入，不要硬编码

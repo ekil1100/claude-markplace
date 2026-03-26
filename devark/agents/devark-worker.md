@@ -24,7 +24,7 @@ tools: "Read, Grep, Glob, Bash, Edit, Write"
    - 开始工作时：Status 改为 `in_progress`
    - 完成时：Status 改为 `in_review`，Reason 写变更摘要
    - 遇到阻塞时：Status 改为 `blocked`，Reason 写阻塞原因
-6. **git add + commit**：`git add` 所有变更文件（包括代码、文档和 tasks.md），然后 `git commit`
+6. **git add + commit**：`git add` 所有变更文件（包括代码、文档和 tasks.md）。若这是该 Task 的首轮提交，执行 `git commit`；若是 review 后返工，或只是补充 review/build/workflow 元数据，执行 `git commit --amend` / `git commit --amend --no-edit`，保证**同一 Task 最终只保留一个 commit**
 7. **返回结果**（见下方格式）
 
 **⚠️ 禁止编译**：不要执行 `ark.py`、`ninja`、`gn` 等编译命令。编译验证由 Planner 统一执行。

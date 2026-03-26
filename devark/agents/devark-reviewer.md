@@ -28,6 +28,7 @@ tools: "Read, Grep, Glob, Bash"
 8. **更新 tasks.md**（路径由 Planner 在任务描述中注入）：
    - 通过（≥95）：Status 改为 `completed`，Reason 写分数（如 `97/100`），更新底部 `Progress: X/N completed` 计数
    - 未通过（<95）：Status 改为 `rework`，Reason 写主要扣分项，追加本轮扣分摘要（如 `- ❌ Round N: 正确性 -10, 测试质量 -5`）
+9. 如果 review 记录或 `tasks.md` 更新后让工作区变脏，`git add` 这些 workflow 文件并执行 `git commit --amend --no-edit`，把 review 状态折叠回当前 Task commit；不要再创建 `chore(devark): persist review state for task N` 之类的额外 commit
 
 ## 返回格式
 
